@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  password      String
+  language      String    @default("ru")
+  avatar        String?
+  bio           String?
+  createdAt     DateTime  @default(now())
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+  contactsAdded    Contact[] @relation("ContactOwner")
+  contactsOf       Contact[] @relation("ContactPerson")
+  posts            Post[]
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  ownerId   String
+  contactId String
+  createdAt DateTime @default(now())
+  owner     User     @relation("ContactOwner", fields: [ownerId], references: [id])
+  contact   User     @relation("ContactPerson", fields: [contactId], references: [id])
+
+  @@unique([ownerId, contactId])
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  content    String
+  createdAt  DateTime @default(now())
+  senderId   String
+  receiverId String
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  content   String?
+  media     String?
+  mediaType String?
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+}
