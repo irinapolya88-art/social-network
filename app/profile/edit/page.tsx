@@ -66,7 +66,7 @@ export default function EditProfilePage() {
 
       if (res.ok) {
         setSaved(true)
-        router.push("/chat")
+        router.push(`/profile/${session?.user?.id}`)
       }
     } catch (error) {
       console.error("Failed to save profile:", error)
