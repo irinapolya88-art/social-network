@@ -66,11 +66,10 @@ export default function EditProfilePage() {
 
       if (res.ok) {
         setSaved(true)
-        setTimeout(() => setSaved(false), 2000)
+        router.push("/chat")
       }
     } catch (error) {
       console.error("Failed to save profile:", error)
-    } finally {
       setSaving(false)
     }
   }
