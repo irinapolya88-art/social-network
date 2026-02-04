@@ -31,8 +31,8 @@ model Contact {
   ownerId   String
   contactId String
   createdAt DateTime @default(now())
-  owner     User     @relation("ContactOwner", fields: [ownerId], references: [id])
-  contact   User     @relation("ContactPerson", fields: [contactId], references: [id])
+  owner     User     @relation("ContactOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  contact   User     @relation("ContactPerson", fields: [contactId], references: [id], onDelete: Cascade)
 
   @@unique([ownerId, contactId])
 }
@@ -43,8 +43,8 @@ model Message {
   createdAt  DateTime @default(now())
   senderId   String
   receiverId String
-  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
-  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
 }
 
 model Post {
@@ -53,6 +53,6 @@ model Post {
   media     String?
   mediaType String?
   authorId  String
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }

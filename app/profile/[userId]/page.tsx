@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, use, useRef } from "react"
-import { useSession } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 
@@ -206,6 +206,19 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
     }
   }
 
+  const deleteAccount = async () => {
+    if (!confirm("Are you sure you want to delete your page?")) return
+
+    try {
+      const res = await fetch("/api/account", { method: "DELETE" })
+      if (res.ok) {
+        signOut({ callbackUrl: "/" })
+      }
+    } catch (error) {
+      console.error("Failed to delete account:", error)
+    }
+  }
+
   if (status === "loading" || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-600 to-emerald-700">
@@ -275,12 +288,20 @@ export default function ProfilePage({ params }: { params: Promise<{ userId: stri
           {/* Actions */}
           <div className="flex flex-col gap-3">
             {isOwnProfile ? (
-              <Link
-                href="/profile/edit"
-                className="w-full py-3 bg-green-600 text-white rounded-lg font-semibold text-center hover:bg-green-700 transition"
-              >
-                Edit Profile
-              </Link>
+              <>
+                <Link
+                  href="/profile/edit"
+                  className="w-full py-3 bg-green-600 text-white rounded-lg font-semibold text-center hover:bg-green-700 transition"
+                >
+                  Edit Profile
+                </Link>
+                <button
+                  onClick={deleteAccount}
+                  className="w-full py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition"
+                >
+                  Delete Page
+                </button>
+              </>
             ) : (
               <>
                 <button
